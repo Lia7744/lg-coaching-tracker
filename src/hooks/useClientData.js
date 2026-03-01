@@ -7,10 +7,18 @@ export function useClientData(clientSlug) {
   const [error, setError] = useState(null);
   const saveTimer = useRef(null);
   const dataRef = useRef(null);
+  const skipNextReload = useRef(false);
 
-  const loadClient = useCallback(async () => {
+  const loadClient = useCallback(async (fromRealtime = false) => {
     try {
-      setLoading(true);
+      if (fromRealtime) {
+        if (skipNextReload.current) {
+          skipNextReload.current = false;
+          return;
+        }
+      } else {
+        setLoading(true);
+      }
 
       const { data: client, error: clientErr } = await supabase
         .from('clients')
@@ -69,8 +77,11 @@ export function useClientData(clientSlug) {
         })),
       };
 
-      setData(assembled);
-      dataRef.current = assembled;
+      // Only update state if data actually changed (prevents flash on realtime echo)
+      if (JSON.stringify(assembled) !== JSON.stringify(dataRef.current)) {
+        setData(assembled);
+        dataRef.current = assembled;
+      }
       setLoading(false);
     } catch (err) {
       setError(err.message);
@@ -81,14 +92,15 @@ export function useClientData(clientSlug) {
   useEffect(() => {
     loadClient();
 
+    const realtimeLoad = () => loadClient(true);
     const channel = supabase
       .channel(`client-${clientSlug}`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'clients' }, () => loadClient())
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'goals' }, () => loadClient())
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'actions' }, () => loadClient())
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'strengths' }, () => loadClient())
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'strategies' }, () => loadClient())
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'sessions' }, () => loadClient())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'clients' }, realtimeLoad)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'goals' }, realtimeLoad)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'actions' }, realtimeLoad)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'strengths' }, realtimeLoad)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'strategies' }, realtimeLoad)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'sessions' }, realtimeLoad)
       .subscribe();
 
     return () => {
@@ -106,6 +118,7 @@ export function useClientData(clientSlug) {
   const saveAll = async (currentData) => {
     if (!currentData || !currentData.clientId) return;
 
+    skipNextReload.current = true;
     try {
       await supabase.from('clients').update({
         client_name: currentData.clientName,
@@ -205,6 +218,7 @@ export function useClientData(clientSlug) {
         );
       }
     } catch (err) {
+      skipNextReload.current = false;
       console.error('Save error:', err);
     }
   };
