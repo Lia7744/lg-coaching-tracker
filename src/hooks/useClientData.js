@@ -53,8 +53,8 @@ export function useClientData(clientSlug) {
         clientId: client.id,
         clientName: client.client_name || '',
         clientInitial: client.client_initial || '',
-        avatarColor: client.avatar_color || '#E8913A',
-        showColorPicker: false,
+        avatarSymbol: client.avatar_symbol || '',
+        showSymbolPicker: false,
         startDate: client.start_date || '',
         northStar: client.north_star || '',
         goals,
@@ -80,7 +80,21 @@ export function useClientData(clientSlug) {
 
   useEffect(() => {
     loadClient();
-  }, [loadClient]);
+
+    const channel = supabase
+      .channel(`client-${clientSlug}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'clients' }, () => loadClient())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'goals' }, () => loadClient())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'actions' }, () => loadClient())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'strengths' }, () => loadClient())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'strategies' }, () => loadClient())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'sessions' }, () => loadClient())
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [loadClient, clientSlug]);
 
   const updateData = useCallback((newData) => {
     setData(newData);
@@ -96,7 +110,7 @@ export function useClientData(clientSlug) {
       await supabase.from('clients').update({
         client_name: currentData.clientName,
         client_initial: currentData.clientInitial,
-        avatar_color: currentData.avatarColor,
+        avatar_symbol: currentData.avatarSymbol,
         start_date: currentData.startDate,
         north_star: currentData.northStar,
       }).eq('id', currentData.clientId);
