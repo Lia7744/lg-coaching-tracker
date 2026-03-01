@@ -61,8 +61,8 @@ export function useClientData(clientSlug) {
         clientId: client.id,
         clientName: client.client_name || '',
         clientInitial: client.client_initial || '',
-        avatarSymbol: client.avatar_symbol || '',
-        showSymbolPicker: false,
+        avatarColor: client.avatar_color || '#D4A373',
+        showColorPicker: false,
         startDate: client.start_date || '',
         northStar: client.north_star || '',
         goals,
@@ -123,7 +123,7 @@ export function useClientData(clientSlug) {
       await supabase.from('clients').update({
         client_name: currentData.clientName,
         client_initial: currentData.clientInitial,
-        avatar_symbol: currentData.avatarSymbol,
+        avatar_color: currentData.avatarColor,
         start_date: currentData.startDate,
         north_star: currentData.northStar,
       }).eq('id', currentData.clientId);

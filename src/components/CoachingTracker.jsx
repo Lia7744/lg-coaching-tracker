@@ -5,8 +5,6 @@ const LOGO_URI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACt
 // ============================================================
 // DONUT CHART COMPONENT
 // ============================================================
-const SYMBOLS = ["🌱", "🔥", "⭐", "🦋", "🌊", "🧠", "💎", "🌙", "🎯", "🦅", "🌻", "⚡"];
-
 const DonutChart = ({ percentage, size = 90, strokeWidth = 10 }) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
@@ -464,9 +462,7 @@ const SectionHeader = ({ icon, title, action }) => (
 // MAIN APP
 // ============================================================
 export default function CoachingTracker({ data, onUpdate }) {
-  const update = (field, value) => {
-    onUpdate({ ...data, [field]: value });
-  };
+  const update = (field, value) => onUpdate({ ...data, [field]: value });
 
   // Goals
   const addGoal = () => {
@@ -518,52 +514,37 @@ export default function CoachingTracker({ data, onUpdate }) {
             <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
               <div style={{ position: "relative" }}>
                 <div
-                  onClick={() => onUpdate({ ...data, showSymbolPicker: !data.showSymbolPicker })}
+                  onClick={() => onUpdate({ ...data, showColorPicker: !data.showColorPicker })}
                   style={{
-                    width: 48, height: 48, borderRadius: "50%", background: "rgba(212,163,115,0.2)",
+                    width: 48, height: 48, borderRadius: "50%", background: `${data.avatarColor}40`,
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: data.avatarSymbol ? 26 : 22,
-                    fontFamily: "'Playfair Display', serif", fontWeight: 700, color: "#D4A373",
-                    cursor: "pointer", border: "2px solid rgba(212,163,115,0.3)",
+                    fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, color: data.avatarColor,
+                    cursor: "pointer", border: `2px solid ${data.avatarColor}60`,
                   }}
                 >
-                  {data.avatarSymbol || data.clientInitial || "?"}
+                  {data.clientInitial || "?"}
                 </div>
-                {data.showSymbolPicker && (
+                {data.showColorPicker && (
                   <div style={{
                     position: "absolute", top: 56, left: "50%", transform: "translateX(-50%)",
-                    background: "#3D3529", borderRadius: 12, padding: "12px 14px",
-                    display: "flex", gap: 6, flexWrap: "wrap", width: 200, justifyContent: "center",
+                    background: "#3D3529", borderRadius: 12, padding: "10px 12px",
+                    display: "flex", gap: 8, flexWrap: "wrap", width: 160, justifyContent: "center",
                     boxShadow: "0 8px 24px rgba(0,0,0,0.3)", zIndex: 10,
                     border: "1px solid rgba(255,255,255,0.1)",
                   }}>
-                    {SYMBOLS.map(symbol => (
+                    {["#E8913A", "#E05D5D", "#2EAD84", "#7C5FC7", "#3BA0D6", "#E8663A", "#5DBB5D", "#D4A030", "#2EB8B8", "#C75FC7", "#E8456E", "#3A8DE8"].map(color => (
                       <div
-                        key={symbol}
-                        onClick={(e) => { e.stopPropagation(); onUpdate({ ...data, avatarSymbol: symbol, showSymbolPicker: false }); }}
+                        key={color}
+                        onClick={(e) => { e.stopPropagation(); onUpdate({ ...data, avatarColor: color, showColorPicker: false }); }}
                         style={{
-                          width: 36, height: 36, borderRadius: "50%", display: "flex",
-                          alignItems: "center", justifyContent: "center", fontSize: 20, cursor: "pointer",
-                          background: data.avatarSymbol === symbol ? "rgba(255,255,255,0.2)" : "transparent",
-                          border: data.avatarSymbol === symbol ? "2px solid rgba(255,255,255,0.5)" : "2px solid transparent",
+                          width: 28, height: 28, borderRadius: "50%", background: color, cursor: "pointer",
+                          border: data.avatarColor === color ? "3px solid white" : "2px solid rgba(255,255,255,0.2)",
                           transition: "transform 0.15s ease",
                         }}
-                        onMouseEnter={e => e.currentTarget.style.transform = "scale(1.2)"}
-                        onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
-                      >
-                        {symbol}
-                      </div>
+                        onMouseEnter={e => e.target.style.transform = "scale(1.15)"}
+                        onMouseLeave={e => e.target.style.transform = "scale(1)"}
+                      />
                     ))}
-                    <div
-                      onClick={(e) => { e.stopPropagation(); onUpdate({ ...data, avatarSymbol: "", showSymbolPicker: false }); }}
-                      style={{
-                        width: 36, height: 36, borderRadius: "50%", display: "flex",
-                        alignItems: "center", justifyContent: "center", fontSize: 11, cursor: "pointer",
-                        color: "rgba(255,255,255,0.5)", border: "2px solid rgba(255,255,255,0.15)",
-                      }}
-                    >
-                      clear
-                    </div>
                   </div>
                 )}
               </div>
