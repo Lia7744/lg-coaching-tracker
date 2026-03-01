@@ -463,15 +463,25 @@ const SessionNote = ({ session, onUpdate, onDelete }) => {
 // ============================================================
 // SECTION HEADER
 // ============================================================
-const SectionHeader = ({ icon, title, action }) => (
-  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, marginTop: 40 }}>
+const SectionHeader = ({ icon, title, action, collapsed, onToggle, count }) => (
+  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: collapsed ? 8 : 16, marginTop: 40, cursor: "pointer" }} onClick={onToggle}>
     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
       <span style={{ fontSize: 20 }}>{icon}</span>
       <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, color: "#3D3529", margin: 0 }}>
         {title}
       </h2>
+      {count !== undefined && (
+        <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: "#B5AD9E", background: "#F0ECE6", borderRadius: 12, padding: "2px 10px" }}>
+          {count}
+        </span>
+      )}
+      <svg width="18" height="18" viewBox="0 0 20 20" fill="none" style={{ transform: collapsed ? "rotate(-90deg)" : "rotate(0deg)", transition: "transform 0.2s ease", marginLeft: 4 }}>
+        <path d="M5 7.5L10 12.5L15 7.5" stroke="#B5AD9E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
     </div>
-    {action}
+    <div onClick={(e) => e.stopPropagation()}>
+      {action}
+    </div>
   </div>
 );
 
@@ -480,6 +490,15 @@ const SectionHeader = ({ icon, title, action }) => (
 // ============================================================
 export default function CoachingTracker({ data, onUpdate }) {
   const update = (field, value) => onUpdate({ ...data, [field]: value });
+
+  const [collapsed, setCollapsed] = useState({
+    goals: false,
+    completedGoals: true,
+    strengths: false,
+    strategies: false,
+    sessions: false,
+  });
+  const toggleSection = (section) => setCollapsed(prev => ({ ...prev, [section]: !prev[section] }));
 
   // Goals
   const addGoal = () => {
@@ -631,59 +650,38 @@ export default function CoachingTracker({ data, onUpdate }) {
       <div style={{ maxWidth: 800, margin: "0 auto", padding: "0 24px 60px" }}>
 
         {/* Goals Section */}
-        <SectionHeader
-          icon="🎯"
-          title="Goals"
-          action={
-            <button onClick={addGoal} style={{
-              fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 600,
-              color: "white", background: "#4A7C6F", border: "none", borderRadius: 10,
-              padding: "8px 18px", cursor: "pointer",
-            }}>
-              + Add Goal
-            </button>
-          }
-        />
         {(() => {
           const activeGoals = data.goals.filter(g => !g.completed);
           const completedGoals = data.goals.filter(g => g.completed);
           return (
             <>
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                {activeGoals.length === 0 && completedGoals.length === 0 ? (
-                  <div style={{
-                    textAlign: "center", padding: "40px 20px", background: "white",
-                    borderRadius: 16, border: "2px dashed #E8E4DF", color: "#B5AD9E", fontSize: 14,
+              <SectionHeader
+                icon="🎯"
+                title="Goals"
+                collapsed={collapsed.goals}
+                onToggle={() => toggleSection('goals')}
+                count={activeGoals.length}
+                action={
+                  <button onClick={addGoal} style={{
+                    fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 600,
+                    color: "white", background: "#4A7C6F", border: "none", borderRadius: 10,
+                    padding: "8px 18px", cursor: "pointer",
                   }}>
-                    No goals yet. Click "+ Add Goal" to start building the roadmap.
-                  </div>
-                ) : (
-                  activeGoals.map((goal) => {
-                    const realIdx = data.goals.indexOf(goal);
-                    return (
-                      <GoalCard
-                        key={goal.id}
-                        goal={goal}
-                        onUpdate={(updated) => updateGoal(realIdx, updated)}
-                        onDelete={() => deleteGoal(realIdx)}
-                      />
-                    );
-                  })
-                )}
-              </div>
-              {completedGoals.length > 0 && (
-                <>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 32, marginBottom: 12 }}>
-                    <span style={{ fontSize: 16 }}>✅</span>
-                    <h3 style={{
-                      fontFamily: "'DM Sans', sans-serif", fontSize: 15, fontWeight: 600,
-                      color: "#B5AD9E", margin: 0,
+                    + Add Goal
+                  </button>
+                }
+              />
+              {!collapsed.goals && (
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {activeGoals.length === 0 && completedGoals.length === 0 ? (
+                    <div style={{
+                      textAlign: "center", padding: "40px 20px", background: "white",
+                      borderRadius: 16, border: "2px dashed #E8E4DF", color: "#B5AD9E", fontSize: 14,
                     }}>
-                      Completed Goals ({completedGoals.length})
-                    </h3>
-                  </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                    {completedGoals.map((goal) => {
+                      No goals yet. Click "+ Add Goal" to start building the roadmap.
+                    </div>
+                  ) : (
+                    activeGoals.map((goal) => {
                       const realIdx = data.goals.indexOf(goal);
                       return (
                         <GoalCard
@@ -693,8 +691,34 @@ export default function CoachingTracker({ data, onUpdate }) {
                           onDelete={() => deleteGoal(realIdx)}
                         />
                       );
-                    })}
-                  </div>
+                    })
+                  )}
+                </div>
+              )}
+              {completedGoals.length > 0 && (
+                <>
+                  <SectionHeader
+                    icon="✅"
+                    title="Completed Goals"
+                    collapsed={collapsed.completedGoals}
+                    onToggle={() => toggleSection('completedGoals')}
+                    count={completedGoals.length}
+                  />
+                  {!collapsed.completedGoals && (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                      {completedGoals.map((goal) => {
+                        const realIdx = data.goals.indexOf(goal);
+                        return (
+                          <GoalCard
+                            key={goal.id}
+                            goal={goal}
+                            onUpdate={(updated) => updateGoal(realIdx, updated)}
+                            onDelete={() => deleteGoal(realIdx)}
+                          />
+                        );
+                      })}
+                    </div>
+                  )}
                 </>
               )}
             </>
@@ -705,6 +729,9 @@ export default function CoachingTracker({ data, onUpdate }) {
         <SectionHeader
           icon="💪"
           title="My Strengths"
+          collapsed={collapsed.strengths}
+          onToggle={() => toggleSection('strengths')}
+          count={data.strengths.length}
           action={
             <button onClick={addStrength} style={{
               fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 600,
@@ -715,30 +742,35 @@ export default function CoachingTracker({ data, onUpdate }) {
             </button>
           }
         />
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {data.strengths.length === 0 ? (
-            <div style={{
-              textAlign: "center", padding: "30px 20px", background: "#F0F7F4",
-              borderRadius: 12, border: "1px dashed #D5E8DF", color: "#B5AD9E", fontSize: 14,
-            }}>
-              Recognize and track your strengths here. These can be utilized to help you overcome challenges you face.
-            </div>
-          ) : (
-            data.strengths.map((s, idx) => (
-              <StrengthItem
-                key={s.id}
-                strength={s}
-                onUpdate={(u) => updateStrength(idx, u)}
-                onDelete={() => deleteStrength(idx)}
-              />
-            ))
-          )}
-        </div>
+        {!collapsed.strengths && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {data.strengths.length === 0 ? (
+              <div style={{
+                textAlign: "center", padding: "30px 20px", background: "#F0F7F4",
+                borderRadius: 12, border: "1px dashed #D5E8DF", color: "#B5AD9E", fontSize: 14,
+              }}>
+                Recognize and track your strengths here. These can be utilized to help you overcome challenges you face.
+              </div>
+            ) : (
+              data.strengths.map((s, idx) => (
+                <StrengthItem
+                  key={s.id}
+                  strength={s}
+                  onUpdate={(u) => updateStrength(idx, u)}
+                  onDelete={() => deleteStrength(idx)}
+                />
+              ))
+            )}
+          </div>
+        )}
 
         {/* Strategies Bank */}
         <SectionHeader
           icon="💡"
           title="Strategies That Work"
+          collapsed={collapsed.strategies}
+          onToggle={() => toggleSection('strategies')}
+          count={data.strategies.length}
           action={
             <button onClick={addStrategy} style={{
               fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 600,
@@ -749,30 +781,35 @@ export default function CoachingTracker({ data, onUpdate }) {
             </button>
           }
         />
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {data.strategies.length === 0 ? (
-            <div style={{
-              textAlign: "center", padding: "30px 20px", background: "#FAF8F5",
-              borderRadius: 12, border: "1px dashed #E8E4DF", color: "#B5AD9E", fontSize: 14,
-            }}>
-              A running list of what works for you so you can refer back later.
-            </div>
-          ) : (
-            data.strategies.map((s, idx) => (
-              <StrategyItem
-                key={s.id}
-                strategy={s}
-                onUpdate={(u) => updateStrategy(idx, u)}
-                onDelete={() => deleteStrategy(idx)}
-              />
-            ))
-          )}
-        </div>
+        {!collapsed.strategies && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {data.strategies.length === 0 ? (
+              <div style={{
+                textAlign: "center", padding: "30px 20px", background: "#FAF8F5",
+                borderRadius: 12, border: "1px dashed #E8E4DF", color: "#B5AD9E", fontSize: 14,
+              }}>
+                A running list of what works for you so you can refer back later.
+              </div>
+            ) : (
+              data.strategies.map((s, idx) => (
+                <StrategyItem
+                  key={s.id}
+                  strategy={s}
+                  onUpdate={(u) => updateStrategy(idx, u)}
+                  onDelete={() => deleteStrategy(idx)}
+                />
+              ))
+            )}
+          </div>
+        )}
 
         {/* Session Log */}
         <SectionHeader
           icon="📝"
           title="Session Log"
+          collapsed={collapsed.sessions}
+          onToggle={() => toggleSection('sessions')}
+          count={data.sessions.length}
           action={
             <button onClick={addSession} style={{
               fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 600,
@@ -783,25 +820,27 @@ export default function CoachingTracker({ data, onUpdate }) {
             </button>
           }
         />
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {data.sessions.length === 0 ? (
-            <div style={{
-              textAlign: "center", padding: "30px 20px", background: "#FAF8F5",
-              borderRadius: 12, border: "1px dashed #E8E4DF", color: "#B5AD9E", fontSize: 14,
-            }}>
-              Session notes will appear here. Log insights and action items after each session.
-            </div>
-          ) : (
-            data.sessions.map((s, idx) => (
-              <SessionNote
-                key={s.id}
-                session={s}
-                onUpdate={(u) => updateSession(idx, u)}
-                onDelete={() => deleteSession(idx)}
-              />
-            ))
-          )}
-        </div>
+        {!collapsed.sessions && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {data.sessions.length === 0 ? (
+              <div style={{
+                textAlign: "center", padding: "30px 20px", background: "#FAF8F5",
+                borderRadius: 12, border: "1px dashed #E8E4DF", color: "#B5AD9E", fontSize: 14,
+              }}>
+                Session notes will appear here. Log insights and action items after each session.
+              </div>
+            ) : (
+              data.sessions.map((s, idx) => (
+                <SessionNote
+                  key={s.id}
+                  session={s}
+                  onUpdate={(u) => updateSession(idx, u)}
+                  onDelete={() => deleteSession(idx)}
+                />
+              ))
+            )}
+          </div>
+        )}
 
         {/* Footer */}
         <div style={{ marginTop: 60, textAlign: "center", padding: "24px 0", borderTop: "1px solid #E8E4DF", display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
