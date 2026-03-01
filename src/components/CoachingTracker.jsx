@@ -168,15 +168,21 @@ const GoalCard = ({ goal, onUpdate, onDelete }) => {
 
   return (
     <div style={{
-      background: "#FFFFFF", borderRadius: 16, border: "1px solid #E8E4DF",
-      overflow: "hidden", boxShadow: "0 1px 3px rgba(61,53,41,0.04)",
+      background: goal.completed ? "#FAF8F5" : "#FFFFFF",
+      borderRadius: goal.completed ? 12 : 16,
+      border: goal.completed ? "1px solid #F0ECE6" : "1px solid #E8E4DF",
+      overflow: "hidden",
+      boxShadow: goal.completed ? "none" : "0 1px 3px rgba(61,53,41,0.04)",
+      opacity: goal.completed ? 0.7 : 1,
+      transform: goal.completed ? "scale(0.97)" : "scale(1)",
+      transition: "all 0.2s ease",
     }}>
       {/* Header */}
       <div
         onClick={() => setExpanded(!expanded)}
         style={{
           display: "flex", alignItems: "center", justifyContent: "space-between",
-          padding: "20px 24px", cursor: "pointer", gap: 16,
+          padding: goal.completed ? "14px 18px" : "20px 24px", cursor: "pointer", gap: 16,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 16, flex: 1, minWidth: 0 }}>
@@ -186,7 +192,7 @@ const GoalCard = ({ goal, onUpdate, onDelete }) => {
           }} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{
-              fontFamily: "'DM Sans', sans-serif", fontSize: 17, fontWeight: 700,
+              fontFamily: "'DM Sans', sans-serif", fontSize: goal.completed ? 14 : 17, fontWeight: 700,
               color: "#3D3529", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
             }}>
               {goal.title || "Untitled Goal"}
@@ -298,8 +304,19 @@ const GoalCard = ({ goal, onUpdate, onDelete }) => {
             />
           </div>
 
-          {/* Delete Goal */}
-          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
+          {/* Goal Actions */}
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16 }}>
+            <button
+              onClick={() => onUpdate({ ...goal, completed: !goal.completed })}
+              style={{
+                fontFamily: "'DM Sans', sans-serif", fontSize: 12,
+                color: goal.completed ? "#D4A373" : "#4A7C6F",
+                background: goal.completed ? "#FFF8F0" : "#E8F5F0",
+                border: "none", borderRadius: 8, padding: "5px 14px", cursor: "pointer",
+              }}
+            >
+              {goal.completed ? "↩ Reopen Goal" : "✓ Complete Goal"}
+            </button>
             <button
               onClick={onDelete}
               style={{
@@ -468,7 +485,7 @@ export default function CoachingTracker({ data, onUpdate }) {
   const addGoal = () => {
     update("goals", [
       ...data.goals,
-      { id: Date.now(), title: "", why: "", challenges: "", notes: "", actions: [] },
+      { id: Date.now(), title: "", why: "", challenges: "", notes: "", actions: [], completed: false },
     ]);
   };
 
@@ -627,25 +644,62 @@ export default function CoachingTracker({ data, onUpdate }) {
             </button>
           }
         />
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          {data.goals.length === 0 ? (
-            <div style={{
-              textAlign: "center", padding: "40px 20px", background: "white",
-              borderRadius: 16, border: "2px dashed #E8E4DF", color: "#B5AD9E", fontSize: 14,
-            }}>
-              No goals yet. Click "+ Add Goal" to start building the roadmap.
-            </div>
-          ) : (
-            data.goals.map((goal, idx) => (
-              <GoalCard
-                key={goal.id}
-                goal={goal}
-                onUpdate={(updated) => updateGoal(idx, updated)}
-                onDelete={() => deleteGoal(idx)}
-              />
-            ))
-          )}
-        </div>
+        {(() => {
+          const activeGoals = data.goals.filter(g => !g.completed);
+          const completedGoals = data.goals.filter(g => g.completed);
+          return (
+            <>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {activeGoals.length === 0 && completedGoals.length === 0 ? (
+                  <div style={{
+                    textAlign: "center", padding: "40px 20px", background: "white",
+                    borderRadius: 16, border: "2px dashed #E8E4DF", color: "#B5AD9E", fontSize: 14,
+                  }}>
+                    No goals yet. Click "+ Add Goal" to start building the roadmap.
+                  </div>
+                ) : (
+                  activeGoals.map((goal) => {
+                    const realIdx = data.goals.indexOf(goal);
+                    return (
+                      <GoalCard
+                        key={goal.id}
+                        goal={goal}
+                        onUpdate={(updated) => updateGoal(realIdx, updated)}
+                        onDelete={() => deleteGoal(realIdx)}
+                      />
+                    );
+                  })
+                )}
+              </div>
+              {completedGoals.length > 0 && (
+                <>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 32, marginBottom: 12 }}>
+                    <span style={{ fontSize: 16 }}>✅</span>
+                    <h3 style={{
+                      fontFamily: "'DM Sans', sans-serif", fontSize: 15, fontWeight: 600,
+                      color: "#B5AD9E", margin: 0,
+                    }}>
+                      Completed Goals ({completedGoals.length})
+                    </h3>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    {completedGoals.map((goal) => {
+                      const realIdx = data.goals.indexOf(goal);
+                      return (
+                        <GoalCard
+                          key={goal.id}
+                          goal={goal}
+                          onUpdate={(updated) => updateGoal(realIdx, updated)}
+                          onDelete={() => deleteGoal(realIdx)}
+                        />
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </>
+          );
+        })()}
 
         {/* Strengths Section */}
         <SectionHeader

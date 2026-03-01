@@ -48,6 +48,7 @@ export function useClientData(clientSlug) {
 
       const goals = (goalsRes.data || []).map(goal => ({
         ...goal,
+        completed: goal.completed || false,
         actions: actionsData.filter(a => a.goal_id === goal.id).map(a => ({
           id: a.id,
           text: a.text || '',
@@ -152,6 +153,7 @@ export function useClientData(clientSlug) {
             why: goal.why || '',
             challenges: goal.challenges || '',
             notes: goal.notes || '',
+            completed: goal.completed || false,
             sort_order: i,
           }).select('id').single();
           goalId = inserted.id;
@@ -163,6 +165,7 @@ export function useClientData(clientSlug) {
             why: goal.why || '',
             challenges: goal.challenges || '',
             notes: goal.notes || '',
+            completed: goal.completed || false,
             sort_order: i,
           }).eq('id', goalId);
         }
