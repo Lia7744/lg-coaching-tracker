@@ -14,15 +14,15 @@ const DonutChart = ({ percentage, size = 90, strokeWidth = 10 }) => {
   const center = size / 2;
 
   const getColor = (pct) => {
-    if (pct >= 75) return "#4A7C6F";
-    if (pct >= 40) return "#D4A373";
-    return "#C4887A";
+    if (pct >= 75) return "#5E8C6A";
+    if (pct >= 40) return "#D4A853";
+    return "#D4A853";
   };
 
   return (
     <div style={{ position: "relative", width: size, height: size, flexShrink: 0 }}>
       <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
-        <circle cx={center} cy={center} r={radius} fill="none" stroke="#E8E4DF" strokeWidth={strokeWidth} />
+        <circle cx={center} cy={center} r={radius} fill="none" stroke="#E8E5E0" strokeWidth={strokeWidth} />
         <circle
           cx={center} cy={center} r={radius} fill="none"
           stroke={getColor(percentage)} strokeWidth={strokeWidth}
@@ -33,7 +33,7 @@ const DonutChart = ({ percentage, size = 90, strokeWidth = 10 }) => {
       </svg>
       <div style={{
         position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center",
-        fontFamily: "'DM Sans', sans-serif", fontSize: 16, fontWeight: 700, color: "#3D3529"
+        fontFamily: "'DM Sans', sans-serif", fontSize: 16, fontWeight: 700, color: "#1A1A1A"
       }}>
         {Math.round(percentage)}%
       </div>
@@ -53,7 +53,7 @@ const EditableText = ({ value, onChange, placeholder, style = {}, multiline = fa
       placeholder={placeholder}
       style={{
         background: "transparent", border: "none", outline: "none", width: "100%",
-        fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: "#3D3529",
+        fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: "#1A1A1A",
         resize: multiline ? "vertical" : "none",
         minHeight: multiline ? 60 : "auto",
         padding: "4px 0",
@@ -70,14 +70,14 @@ const ActionItem = ({ action, onUpdate, onDelete }) => {
   return (
     <div style={{
       padding: "12px 0",
-      borderBottom: "1px solid #F0ECE6",
+      borderBottom: "1px solid #E8E5E0",
     }}>
       <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
         <button
           onClick={() => onUpdate({ ...action, done: !action.done })}
           style={{
-            width: 22, height: 22, borderRadius: 6, border: `2px solid ${action.done ? "#4A7C6F" : "#C4BAA8"}`,
-            background: action.done ? "#4A7C6F" : "transparent", cursor: "pointer",
+            width: 22, height: 22, borderRadius: 6, border: `2px solid ${action.done ? "#5E8C6A" : "#6B6B6B"}`,
+            background: action.done ? "#5E8C6A" : "transparent", cursor: "pointer",
             display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, padding: 0,
             marginTop: 2,
           }}
@@ -95,7 +95,7 @@ const ActionItem = ({ action, onUpdate, onDelete }) => {
             placeholder="Action step..."
             style={{
               textDecoration: action.done ? "line-through" : "none",
-              color: action.done ? "#A89F91" : "#3D3529",
+              color: action.done ? "#A89F91" : "#1A1A1A",
               width: "100%",
             }}
           />
@@ -105,8 +105,8 @@ const ActionItem = ({ action, onUpdate, onDelete }) => {
               value={action.dueDate || ""}
               onChange={(e) => onUpdate({ ...action, dueDate: e.target.value })}
               style={{
-                fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: "#8A8070",
-                border: "1px solid #E8E4DF", borderRadius: 6, padding: "3px 6px",
+                fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: "#6B6B6B",
+                border: "1px solid #E8E5E0", borderRadius: 6, padding: "3px 6px",
                 background: "#FDFCFA", width: 120,
               }}
             />
@@ -115,9 +115,9 @@ const ActionItem = ({ action, onUpdate, onDelete }) => {
               onChange={(e) => onUpdate({ ...action, status: e.target.value })}
               style={{
                 fontFamily: "'DM Sans', sans-serif", fontSize: 12,
-                border: "1px solid #E8E4DF", borderRadius: 6, padding: "3px 8px",
+                border: "1px solid #E8E5E0", borderRadius: 6, padding: "3px 8px",
                 background: action.status === "done" ? "#E8F5E8" : action.status === "in-progress" ? "#FFF3E0" : "#FDFCFA",
-                color: "#3D3529", width: 100,
+                color: "#1A1A1A", width: 100,
               }}
             >
               <option value="todo">To Do</option>
@@ -130,7 +130,7 @@ const ActionItem = ({ action, onUpdate, onDelete }) => {
           onClick={onDelete}
           style={{
             background: "none", border: "none", cursor: "pointer", padding: 4,
-            color: "#C4BAA8", fontSize: 16, lineHeight: 1, flexShrink: 0,
+            color: "#6B6B6B", fontSize: 16, lineHeight: 1, flexShrink: 0,
           }}
           title="Remove"
         >×</button>
@@ -170,9 +170,9 @@ const GoalCard = ({ goal, onUpdate, onDelete }) => {
 
   return (
     <div style={{
-      background: goal.completed ? "#FAF8F5" : "#FFFFFF",
+      background: goal.completed ? "#FFFFFF" : "#FFFFFF",
       borderRadius: goal.completed ? 12 : 16,
-      border: goal.completed ? "1px solid #F0ECE6" : "1px solid #E8E4DF",
+      border: goal.completed ? "1px solid #E8E5E0" : "1px solid #E8E5E0",
       overflow: "hidden",
       boxShadow: goal.completed ? "none" : "0 1px 3px rgba(61,53,41,0.04)",
       opacity: goal.completed ? 0.7 : 1,
@@ -190,17 +190,17 @@ const GoalCard = ({ goal, onUpdate, onDelete }) => {
         <div style={{ display: "flex", alignItems: "center", gap: 16, flex: 1, minWidth: 0 }}>
           <div style={{
             width: 8, height: 40, borderRadius: 4, flexShrink: 0,
-            background: percentage >= 75 ? "#4A7C6F" : percentage >= 40 ? "#D4A373" : "#C4887A",
+            background: percentage >= 75 ? "#5E8C6A" : percentage >= 40 ? "#D4A853" : "#D4A853",
           }} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{
               fontFamily: "'DM Sans', sans-serif", fontSize: goal.completed ? 14 : 17, fontWeight: 700,
-              color: "#3D3529", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+              color: "#1A1A1A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
             }}>
               {goal.title || "Untitled Goal"}
             </div>
             <div style={{
-              fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: "#8A8070", marginTop: 2,
+              fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: "#6B6B6B", marginTop: 2,
             }}>
               {doneActions}/{totalActions} actions complete
             </div>
@@ -212,18 +212,18 @@ const GoalCard = ({ goal, onUpdate, onDelete }) => {
             width="20" height="20" viewBox="0 0 20 20" fill="none"
             style={{ transform: expanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s ease", flexShrink: 0 }}
           >
-            <path d="M5 7.5L10 12.5L15 7.5" stroke="#8A8070" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M5 7.5L10 12.5L15 7.5" stroke="#6B6B6B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
       </div>
 
       {/* Expanded Content */}
       {expanded && (
-        <div style={{ padding: "0 24px 24px", borderTop: "1px solid #F0ECE6" }}>
+        <div style={{ padding: "0 24px 24px", borderTop: "1px solid #E8E5E0" }}>
           {/* Goal Title & Why */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 20 }}>
             <div>
-              <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, fontWeight: 700, color: "#8A8070", textTransform: "uppercase", letterSpacing: 1 }}>
+              <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, fontWeight: 700, color: "#6B6B6B", textTransform: "uppercase", letterSpacing: 1 }}>
                 Goal
               </label>
               <EditableText
@@ -234,7 +234,7 @@ const GoalCard = ({ goal, onUpdate, onDelete }) => {
               />
             </div>
             <div>
-              <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, fontWeight: 700, color: "#8A8070", textTransform: "uppercase", letterSpacing: 1 }}>
+              <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, fontWeight: 700, color: "#6B6B6B", textTransform: "uppercase", letterSpacing: 1 }}>
                 Why This Matters
               </label>
               <EditableText
@@ -248,7 +248,7 @@ const GoalCard = ({ goal, onUpdate, onDelete }) => {
 
           {/* Challenges */}
           <div style={{ marginTop: 16 }}>
-            <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, fontWeight: 700, color: "#8A8070", textTransform: "uppercase", letterSpacing: 1 }}>
+            <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, fontWeight: 700, color: "#6B6B6B", textTransform: "uppercase", letterSpacing: 1 }}>
               Challenges
             </label>
             <EditableText
@@ -262,14 +262,14 @@ const GoalCard = ({ goal, onUpdate, onDelete }) => {
           {/* Action Steps */}
           <div style={{ marginTop: 20 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-              <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, fontWeight: 700, color: "#8A8070", textTransform: "uppercase", letterSpacing: 1 }}>
+              <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, fontWeight: 700, color: "#6B6B6B", textTransform: "uppercase", letterSpacing: 1 }}>
                 Action Steps
               </label>
               <button
                 onClick={addAction}
                 style={{
                   fontFamily: "'DM Sans', sans-serif", fontSize: 12, fontWeight: 600,
-                  color: "#4A7C6F", background: "#E8F5F0", border: "none", borderRadius: 8,
+                  color: "#5E8C6A", background: "#E8F5F0", border: "none", borderRadius: 8,
                   padding: "5px 12px", cursor: "pointer",
                 }}
               >
@@ -277,7 +277,7 @@ const GoalCard = ({ goal, onUpdate, onDelete }) => {
               </button>
             </div>
             {goal.actions.length === 0 ? (
-              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: "#B5AD9E", padding: "12px 0", fontStyle: "italic" }}>
+              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: "#6B6B6B", padding: "12px 0", fontStyle: "italic" }}>
                 No action steps yet. Click "+ Add Step" to get started.
               </div>
             ) : (
@@ -294,7 +294,7 @@ const GoalCard = ({ goal, onUpdate, onDelete }) => {
 
           {/* Goal Notes */}
           <div style={{ marginTop: 20 }}>
-            <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, fontWeight: 700, color: "#8A8070", textTransform: "uppercase", letterSpacing: 1 }}>
+            <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, fontWeight: 700, color: "#6B6B6B", textTransform: "uppercase", letterSpacing: 1 }}>
               Goal Notes
             </label>
             <EditableText
@@ -302,7 +302,7 @@ const GoalCard = ({ goal, onUpdate, onDelete }) => {
               onChange={(notes) => onUpdate({ ...goal, notes })}
               placeholder="Observations, context, session insights for this goal..."
               multiline
-              style={{ fontSize: 13, background: "#FAF8F5", borderRadius: 8, padding: 12, marginTop: 6, border: "1px solid #F0ECE6" }}
+              style={{ fontSize: 13, background: "#FFFFFF", borderRadius: 8, padding: 12, marginTop: 6, border: "1px solid #E8E5E0" }}
             />
           </div>
 
@@ -312,7 +312,7 @@ const GoalCard = ({ goal, onUpdate, onDelete }) => {
               onClick={() => onUpdate({ ...goal, completed: !goal.completed })}
               style={{
                 fontFamily: "'DM Sans', sans-serif", fontSize: 12,
-                color: goal.completed ? "#D4A373" : "#4A7C6F",
+                color: goal.completed ? "#D4A853" : "#5E8C6A",
                 background: goal.completed ? "#FFF8F0" : "#E8F5F0",
                 border: "none", borderRadius: 8, padding: "5px 14px", cursor: "pointer",
               }}
@@ -322,8 +322,8 @@ const GoalCard = ({ goal, onUpdate, onDelete }) => {
             <button
               onClick={onDelete}
               style={{
-                fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: "#C4887A",
-                background: "none", border: "1px solid #E8E4DF", borderRadius: 8,
+                fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: "#D4A853",
+                background: "none", border: "1px solid #E8E5E0", borderRadius: 8,
                 padding: "5px 14px", cursor: "pointer",
               }}
             >
@@ -345,14 +345,14 @@ const StrengthItem = ({ strength, onUpdate, onDelete }) => {
       display: "flex", alignItems: "flex-start", gap: 10, padding: "10px 14px",
       background: "#F0F7F4", borderRadius: 10, border: "1px solid #D5E8DF",
     }}>
-      <span style={{ color: "#4A7C6F", fontSize: 16, lineHeight: 1.4, flexShrink: 0 }}>◆</span>
+      <span style={{ color: "#5E8C6A", fontSize: 16, lineHeight: 1.4, flexShrink: 0 }}>◆</span>
       <EditableText
         value={strength.text}
         onChange={(text) => onUpdate({ ...strength, text })}
         placeholder="A strength, skill, or quality you bring to the table..."
         style={{ flex: 1, fontSize: 14, lineHeight: 1.5 }}
       />
-      <button onClick={onDelete} style={{ background: "none", border: "none", cursor: "pointer", color: "#C4BAA8", fontSize: 14, padding: 2, flexShrink: 0 }}>×</button>
+      <button onClick={onDelete} style={{ background: "none", border: "none", cursor: "pointer", color: "#6B6B6B", fontSize: 14, padding: 2, flexShrink: 0 }}>×</button>
     </div>
   );
 };
@@ -364,16 +364,16 @@ const StrategyItem = ({ strategy, onUpdate, onDelete }) => {
   return (
     <div style={{
       display: "flex", alignItems: "flex-start", gap: 10, padding: "10px 14px",
-      background: "#FAF8F5", borderRadius: 10, border: "1px solid #F0ECE6",
+      background: "#FFFFFF", borderRadius: 10, border: "1px solid #E8E5E0",
     }}>
-      <span style={{ color: "#D4A373", fontSize: 16, lineHeight: 1.4, flexShrink: 0 }}>✦</span>
+      <span style={{ color: "#D4A853", fontSize: 16, lineHeight: 1.4, flexShrink: 0 }}>✦</span>
       <EditableText
         value={strategy.text}
         onChange={(text) => onUpdate({ ...strategy, text })}
         placeholder="Add a strategy or technique that's been helpful..."
         style={{ flex: 1, fontSize: 14, lineHeight: 1.5 }}
       />
-      <button onClick={onDelete} style={{ background: "none", border: "none", cursor: "pointer", color: "#C4BAA8", fontSize: 14, padding: 2, flexShrink: 0 }}>×</button>
+      <button onClick={onDelete} style={{ background: "none", border: "none", cursor: "pointer", color: "#6B6B6B", fontSize: 14, padding: 2, flexShrink: 0 }}>×</button>
     </div>
   );
 };
@@ -386,7 +386,7 @@ const SessionNote = ({ session, onUpdate, onDelete }) => {
 
   return (
     <div style={{
-      background: "#FAF8F5", borderRadius: 12, border: "1px solid #F0ECE6", overflow: "hidden",
+      background: "#FFFFFF", borderRadius: 12, border: "1px solid #E8E5E0", overflow: "hidden",
     }}>
       <div
         onClick={() => setExpanded(!expanded)}
@@ -402,22 +402,22 @@ const SessionNote = ({ session, onUpdate, onDelete }) => {
             onChange={(e) => { e.stopPropagation(); onUpdate({ ...session, date: e.target.value }); }}
             onClick={(e) => e.stopPropagation()}
             style={{
-              fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 600, color: "#3D3529",
-              border: "1px solid #E8E4DF", borderRadius: 6, padding: "3px 8px", background: "white",
+              fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 600, color: "#1A1A1A",
+              border: "1px solid #E8E5E0", borderRadius: 6, padding: "3px 8px", background: "white",
             }}
           />
-          <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: "#8A8070" }}>
+          <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: "#6B6B6B" }}>
             {session.title || "Session notes..."}
           </span>
         </div>
         <svg width="16" height="16" viewBox="0 0 20 20" fill="none" style={{ transform: expanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s ease" }}>
-          <path d="M5 7.5L10 12.5L15 7.5" stroke="#8A8070" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M5 7.5L10 12.5L15 7.5" stroke="#6B6B6B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </div>
       {expanded && (
         <div style={{ padding: "0 18px 18px" }}>
           <div style={{ marginBottom: 12 }}>
-            <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, fontWeight: 700, color: "#8A8070", textTransform: "uppercase", letterSpacing: 1 }}>
+            <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, fontWeight: 700, color: "#6B6B6B", textTransform: "uppercase", letterSpacing: 1 }}>
               Session Title
             </label>
             <EditableText
@@ -428,7 +428,7 @@ const SessionNote = ({ session, onUpdate, onDelete }) => {
             />
           </div>
           <div style={{ marginBottom: 12 }}>
-            <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, fontWeight: 700, color: "#8A8070", textTransform: "uppercase", letterSpacing: 1 }}>
+            <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, fontWeight: 700, color: "#6B6B6B", textTransform: "uppercase", letterSpacing: 1 }}>
               Key Takeaways
             </label>
             <EditableText
@@ -436,11 +436,11 @@ const SessionNote = ({ session, onUpdate, onDelete }) => {
               onChange={(takeaways) => onUpdate({ ...session, takeaways })}
               placeholder="What were the breakthroughs or insights?"
               multiline
-              style={{ fontSize: 13, background: "white", borderRadius: 8, padding: 10, marginTop: 4, border: "1px solid #E8E4DF" }}
+              style={{ fontSize: 13, background: "white", borderRadius: 8, padding: 10, marginTop: 4, border: "1px solid #E8E5E0" }}
             />
           </div>
           <div style={{ marginBottom: 12 }}>
-            <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, fontWeight: 700, color: "#8A8070", textTransform: "uppercase", letterSpacing: 1 }}>
+            <label style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, fontWeight: 700, color: "#6B6B6B", textTransform: "uppercase", letterSpacing: 1 }}>
               Action Items for Next Week
             </label>
             <EditableText
@@ -448,11 +448,11 @@ const SessionNote = ({ session, onUpdate, onDelete }) => {
               onChange={(nextSteps) => onUpdate({ ...session, nextSteps })}
               placeholder="What do you commit to doing before next session?"
               multiline
-              style={{ fontSize: 13, background: "white", borderRadius: 8, padding: 10, marginTop: 4, border: "1px solid #E8E4DF" }}
+              style={{ fontSize: 13, background: "white", borderRadius: 8, padding: 10, marginTop: 4, border: "1px solid #E8E5E0" }}
             />
           </div>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <button onClick={onDelete} style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: "#C4887A", background: "none", border: "1px solid #E8E4DF", borderRadius: 8, padding: "4px 12px", cursor: "pointer" }}>
+            <button onClick={onDelete} style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: "#D4A853", background: "none", border: "1px solid #E8E5E0", borderRadius: 8, padding: "4px 12px", cursor: "pointer" }}>
               Remove Session
             </button>
           </div>
@@ -469,16 +469,16 @@ const SectionHeader = ({ icon, title, action, collapsed, onToggle, count }) => (
   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: collapsed ? 8 : 16, marginTop: 40, cursor: "pointer" }} onClick={onToggle}>
     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
       <span style={{ fontSize: 20 }}>{icon}</span>
-      <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, color: "#3D3529", margin: 0 }}>
+      <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, color: "#1A1A1A", margin: 0 }}>
         {title}
       </h2>
       {count !== undefined && (
-        <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: "#B5AD9E", background: "#F0ECE6", borderRadius: 12, padding: "2px 10px" }}>
+        <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: "#6B6B6B", background: "#E8E5E0", borderRadius: 12, padding: "2px 10px" }}>
           {count}
         </span>
       )}
       <svg width="18" height="18" viewBox="0 0 20 20" fill="none" style={{ transform: collapsed ? "rotate(-90deg)" : "rotate(0deg)", transition: "transform 0.2s ease", marginLeft: 4 }}>
-        <path d="M5 7.5L10 12.5L15 7.5" stroke="#B5AD9E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M5 7.5L10 12.5L15 7.5" stroke="#6B6B6B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
     </div>
     <div onClick={(e) => e.stopPropagation()}>
@@ -539,12 +539,12 @@ export default function CoachingTracker({ data, onUpdate }) {
   const overallPct = totalActions === 0 ? 0 : (doneActions / totalActions) * 100;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#F5F1EB", fontFamily: "'DM Sans', sans-serif" }}>
+    <div style={{ minHeight: "100vh", background: "#FAF9F6", fontFamily: "'DM Sans', sans-serif" }}>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
 
       {/* Header */}
       <div style={{
-        background: "linear-gradient(135deg, #3D3529 0%, #5A4E3C 100%)",
+        background: "linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 100%)",
         padding: "32px 24px 28px", color: "white",
       }}>
         <div style={{ maxWidth: 800, margin: "0 auto" }}>
@@ -558,7 +558,7 @@ export default function CoachingTracker({ data, onUpdate }) {
                     background: "rgba(212,163,115,0.2)",
                     display: "flex", alignItems: "center", justifyContent: "center",
                     fontSize: data.avatarSymbol ? 26 : 22,
-                    fontFamily: "'Playfair Display', serif", fontWeight: 700, color: "#D4A373",
+                    fontFamily: "'Playfair Display', serif", fontWeight: 700, color: "#D4A853",
                     cursor: "pointer", border: "2px solid rgba(212,163,115,0.3)",
                   }}
                 >
@@ -567,7 +567,7 @@ export default function CoachingTracker({ data, onUpdate }) {
                 {data.showSymbolPicker && (
                   <div style={{
                     position: "absolute", top: 56, left: "50%", transform: "translateX(-50%)",
-                    background: "#3D3529", borderRadius: 12, padding: "12px 14px",
+                    background: "#1A1A1A", borderRadius: 12, padding: "12px 14px",
                     display: "flex", gap: 6, flexWrap: "wrap", width: 200, justifyContent: "center",
                     boxShadow: "0 8px 24px rgba(0,0,0,0.3)", zIndex: 10,
                     border: "1px solid rgba(255,255,255,0.1)",
@@ -635,7 +635,7 @@ export default function CoachingTracker({ data, onUpdate }) {
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
               <span style={{ fontSize: 16 }}>✦</span>
-              <span style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, color: "#D4A373" }}>
+              <span style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, color: "#D4A853" }}>
                 North Star
               </span>
             </div>
@@ -654,7 +654,7 @@ export default function CoachingTracker({ data, onUpdate }) {
               <div style={{ flex: 1, height: 6, background: "rgba(255,255,255,0.15)", borderRadius: 3, overflow: "hidden" }}>
                 <div style={{
                   width: `${overallPct}%`, height: "100%", borderRadius: 3,
-                  background: "linear-gradient(90deg, #D4A373, #4A7C6F)",
+                  background: "linear-gradient(90deg, #D4A853, #5E8C6A)",
                   transition: "width 0.4s ease",
                 }} />
               </div>
@@ -684,7 +684,7 @@ export default function CoachingTracker({ data, onUpdate }) {
                 action={
                   <button onClick={addGoal} style={{
                     fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 600,
-                    color: "white", background: "#4A7C6F", border: "none", borderRadius: 10,
+                    color: "white", background: "#5E8C6A", border: "none", borderRadius: 10,
                     padding: "8px 18px", cursor: "pointer",
                   }}>
                     + Add Goal
@@ -696,7 +696,7 @@ export default function CoachingTracker({ data, onUpdate }) {
                   {activeGoals.length === 0 && completedGoals.length === 0 ? (
                     <div style={{
                       textAlign: "center", padding: "40px 20px", background: "white",
-                      borderRadius: 16, border: "2px dashed #E8E4DF", color: "#B5AD9E", fontSize: 14,
+                      borderRadius: 16, border: "2px dashed #E8E5E0", color: "#6B6B6B", fontSize: 14,
                     }}>
                       No goals yet. Click "+ Add Goal" to start building the roadmap.
                     </div>
@@ -755,7 +755,7 @@ export default function CoachingTracker({ data, onUpdate }) {
           action={
             <button onClick={addStrength} style={{
               fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 600,
-              color: "#4A7C6F", background: "#F0F7F4", border: "1px solid #D5E8DF",
+              color: "#5E8C6A", background: "#F0F7F4", border: "1px solid #D5E8DF",
               borderRadius: 10, padding: "8px 18px", cursor: "pointer",
             }}>
               + Add Strength
@@ -767,7 +767,7 @@ export default function CoachingTracker({ data, onUpdate }) {
             {data.strengths.length === 0 ? (
               <div style={{
                 textAlign: "center", padding: "30px 20px", background: "#F0F7F4",
-                borderRadius: 12, border: "1px dashed #D5E8DF", color: "#B5AD9E", fontSize: 14,
+                borderRadius: 12, border: "1px dashed #D5E8DF", color: "#6B6B6B", fontSize: 14,
               }}>
                 Recognize and track your strengths here. These can be utilized to help you overcome challenges you face.
               </div>
@@ -794,7 +794,7 @@ export default function CoachingTracker({ data, onUpdate }) {
           action={
             <button onClick={addStrategy} style={{
               fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 600,
-              color: "#D4A373", background: "#FFF8F0", border: "1px solid #F0E6D6",
+              color: "#D4A853", background: "#FFF8F0", border: "1px solid #F0E6D6",
               borderRadius: 10, padding: "8px 18px", cursor: "pointer",
             }}>
               + Add Strategy
@@ -805,8 +805,8 @@ export default function CoachingTracker({ data, onUpdate }) {
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {data.strategies.length === 0 ? (
               <div style={{
-                textAlign: "center", padding: "30px 20px", background: "#FAF8F5",
-                borderRadius: 12, border: "1px dashed #E8E4DF", color: "#B5AD9E", fontSize: 14,
+                textAlign: "center", padding: "30px 20px", background: "#FFFFFF",
+                borderRadius: 12, border: "1px dashed #E8E5E0", color: "#6B6B6B", fontSize: 14,
               }}>
                 A running list of what works for you so you can refer back later.
               </div>
@@ -833,7 +833,7 @@ export default function CoachingTracker({ data, onUpdate }) {
           action={
             <button onClick={addSession} style={{
               fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 600,
-              color: "#4A7C6F", background: "#E8F5F0", border: "none", borderRadius: 10,
+              color: "#5E8C6A", background: "#E8F5F0", border: "none", borderRadius: 10,
               padding: "8px 18px", cursor: "pointer",
             }}>
               + Log Session
@@ -844,8 +844,8 @@ export default function CoachingTracker({ data, onUpdate }) {
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {data.sessions.length === 0 ? (
               <div style={{
-                textAlign: "center", padding: "30px 20px", background: "#FAF8F5",
-                borderRadius: 12, border: "1px dashed #E8E4DF", color: "#B5AD9E", fontSize: 14,
+                textAlign: "center", padding: "30px 20px", background: "#FFFFFF",
+                borderRadius: 12, border: "1px dashed #E8E5E0", color: "#6B6B6B", fontSize: 14,
               }}>
                 Session notes will appear here. Log insights and action items after each session.
               </div>
@@ -863,9 +863,9 @@ export default function CoachingTracker({ data, onUpdate }) {
         )}
 
         {/* Footer */}
-        <div style={{ marginTop: 60, textAlign: "center", padding: "24px 0", borderTop: "1px solid #E8E4DF", display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
+        <div style={{ marginTop: 60, textAlign: "center", padding: "24px 0", borderTop: "1px solid #E8E5E0", display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
           <img src={LOGO_URI} alt="LG Coaching" style={{ width: 80, height: 80, opacity: 0.6 }} />
-          <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 14, color: "#C4BAA8" }}>
+          <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 14, color: "#6B6B6B" }}>
             Liana Groombridge • ADHD Coaching
           </span>
         </div>
